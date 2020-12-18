@@ -1,0 +1,19 @@
+table_name = 'table1'
+statements = []
+statements.append(f'truncate table [dbo].[{table_name}]')
+
+for row in df.itertuples(index=False):
+    col_names = ', '.join(row._fields)
+    
+    values = f"'{row.field1}', "
+    values += f"'{row.field2}', "
+    values += f"{'NULL' if np.isnan(row.field3) else row.field3}"
+    
+    statements.append(f"\n\nINSERT INTO [dbo].[{table_name}] ({col_names})")
+    statements.append(f"\nVALUES ({values})")
+    
+    #break
+    
+f = open(f"..\\SQL\\{table_name}_INSERTS.sql", "a")
+f.writelines(statements)
+f.close()
